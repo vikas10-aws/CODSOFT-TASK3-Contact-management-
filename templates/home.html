@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <!-- Logout Button -->
+    <a href="{{ url_for('logout') }}" class="btn btn-secondary mb-3">Logout</a>
+
+    <!-- Add New Contact Button -->
+    <a href="{{ url_for('add_contact') }}" class="btn btn-primary mb-3">Add New Contact</a>
+
+    <!-- Search Form -->
+    <form method="POST" action="{{ url_for('search_contact') }}" class="d-flex mb-3">
+        <input class="form-control me-2" type="search" placeholder="Search by name or phone" aria-label="Search" name="query">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+    </form>
+
+    <!-- Contacts Table -->
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Email</th>
+                <th>Address</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for contact in contacts %}
+            <tr>
+                <td>{{ contact.name }}</td>
+                <td>{{ contact.phone }}</td>
+                <td>{{ contact.email }}</td>
+                <td>{{ contact.address }}</td>
+                <td>
+                    <a href="{{ url_for('update_contact', index=loop.index0) }}" class="btn btn-warning">Update</a>
+                    <a href="{{ url_for('delete_contact', index=loop.index0) }}" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
