@@ -8,7 +8,6 @@ app.secret_key = 'your_secret_key'
 
 # Paths to the CSV files
 contacts_csv_file = 'contacts.csv'
-users_csv_file = 'users.csv'
 
 # Load contacts from CSV file into memory
 def load_contacts():
@@ -26,26 +25,7 @@ def save_contacts(contacts):
         writer.writeheader()  # Write the CSV header
         writer.writerows(contacts)  # Write all contacts
 
-# Load users from CSV file
-def load_users():
-    users = []
-    if os.path.exists(users_csv_file):
-        with open(users_csv_file, mode='r') as file:
-            reader = csv.DictReader(file)
-            # Check if the CSV file has the expected columns
-            if 'username' not in reader.fieldnames or 'password' not in reader.fieldnames:
-                raise ValueError("CSV file is missing required columns: 'username' or 'password'")
-            users = list(reader)
-    return users
-
-
-# Save new user to CSV file
-def save_user(user):
-    with open(users_csv_file, mode='a', newline='') as file:
-        writer = csv.DictWriter(file, fieldnames=['username', 'password'])
-        writer.writerow(user)
-
-# Login required decorator
+# Login required decorator (No need for user credentials now, just check if session exists)
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -125,57 +105,13 @@ def search_contact():
         return render_template('home.html', contacts=results)
     return redirect(url_for('home'))
 
-# User Registration
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        
-        # Check if the username already exists
-        users = load_users()
-        if any(user['username'] == username for user in users):
-            flash('Username already exists. Please choose a different one.')
-            return redirect(url_for('register'))
-        
-        # Save the new user to the CSV
-        save_user({'username': username, 'password': password})
-        flash('Registration successful! Please log in.')
-        return redirect(url_for('login'))
-    
-    return render_template('register.html')
-
-# User Login
-# User Login
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        
-        # Load users from CSV
-        users = load_users()
-
-        # Find the user by username and password
-        user = next((user for user in users if user.get('username') == username and user.get('password') == password), None)
-        
-        if user:
-            session['username'] = username
-            flash('Login successful!')
-            return redirect(url_for('home'))
-        else:
-            flash('Invalid credentials. Please try again.')
-            return redirect(url_for('login'))
-    
-    return render_template('login.html')
-
-# User Logout
+# User Logout (No longer needed for registration/login)
 @app.route('/logout')
 @login_required
 def logout():
     session.pop('username', None)
     flash('You have successfully logged out.')
-    return redirect(url_for('login'))
+    return redirect(url_for('home'))
 
 if __name__ == '__main__':
     app.run(debug=True)
