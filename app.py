@@ -32,8 +32,12 @@ def load_users():
     if os.path.exists(users_csv_file):
         with open(users_csv_file, mode='r') as file:
             reader = csv.DictReader(file)
+            # Check if the CSV file has the expected columns
+            if 'username' not in reader.fieldnames or 'password' not in reader.fieldnames:
+                raise ValueError("CSV file is missing required columns: 'username' or 'password'")
             users = list(reader)
     return users
+
 
 # Save new user to CSV file
 def save_user(user):
@@ -142,14 +146,18 @@ def register():
     return render_template('register.html')
 
 # User Login
+# User Login
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
         
+        # Load users from CSV
         users = load_users()
-        user = next((user for user in users if user['username'] == username and user['password'] == password), None)
+
+        # Find the user by username and password
+        user = next((user for user in users if user.get('username') == username and user.get('password') == password), None)
         
         if user:
             session['username'] = username
