@@ -3,23 +3,20 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      python: 3.12
+      python: 3.12  # Adjust to the Python version you're using
     commands:
       - echo Installing dependencies...
-      - pip install -r requirements.txt
+      - pip install -r requirements.txt  # Installs any dependencies specified in requirements.txt
+
   pre_build:
     commands:
-      - echo Running tests...
-      # Add any test commands if you have unit tests
+      - echo Running tests...  # Optional, you can add test commands here if you have any
+
   build:
     commands:
-      - echo Building the application...
-      # Add build steps here if needed
-  post_build:
-    commands:
-      - echo Build completed successfully.
+      - echo Build completed successfully!
 
 artifacts:
   files:
-    - '**/*'
-  base-directory: '.'  # Change if needed; '.' assumes everything is at the root
+    - '**/*'  # Include all files from your repository (or adjust if you want a subset)
+  base-directory: '.'  # The base directory is the root of your project
