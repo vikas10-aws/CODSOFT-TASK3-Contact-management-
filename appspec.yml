@@ -4,8 +4,5 @@ files:
   - source: /
     destination: /var/www/html/your_app_directory  # Change to your actual deployment path
 
-hooks:
-  AfterInstall:
-    - location: scripts/start_server.sh
-      timeout: 300
-      runas: root
+# No hooks needed as you're not running any scripts post-installation
+# If you later decide to run commands after deployment, you can add hooks here
